@@ -4,9 +4,11 @@ import Customizer from "./pages/Customizer";
 
 function App() {
   return (
-    <div>
-      <h1 className="head-text">React app</h1>
-    </div>
+    <main className="app transition-all ease-in">
+      <Home />
+      <Canvas />
+      <Customizer />
+    </main>
   );
 }
 
