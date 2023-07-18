@@ -18,7 +18,7 @@ import {
 
 const Customizer = () => {
   const snap = useSnapshot(state);
-  const [file, setfile] = useState("");
+  const [file, setFile] = useState("");
 
   const [prompt, setPrompt] = useState("");
   const [generatingImg, setGeneratingImg] = useState(false);
@@ -36,12 +36,49 @@ const Customizer = () => {
       case "colorpicker":
         return <ColorPicker />;
       case "filepicker":
-        return <FilePicker />;
+        return <FilePicker file={file} setFile={setFile} readFile={readFile} />;
       case "aipicker":
         return <AIPicker />;
       default:
         break;
     }
+  };
+
+  const handleActiveFilterTab = (tabName) => {
+    switch (tabName) {
+      case "logoShirt":
+        state.isLogoTexture = !activeFilterTab[tabName];
+        break;
+      case "stylishShirt":
+        state.isFullTexture = !activeFilterTab[tabName];
+
+      default:
+        state.isLogoTexture = true;
+        state.isFullTexture = false;
+    }
+
+    setActiveFilterTab((prevState) => {
+      return {
+        ...prevState,
+        [tabName]: !prevState[tabName],
+      };
+    });
+  };
+
+  const handleDecals = (type, result) => {
+    const decalType = DecalTypes[type];
+
+    state[decalType.stateProperty] = result;
+
+    if (!activeFilterTab[decalType.filerTab]) {
+      handleActiveFilterTab(decalType.filerTab);
+    }
+  };
+
+  const readFile = (type) => {
+    reader(file).then((res) => {
+      handleDecals(type, res);
+    });
   };
 
   return (
@@ -88,7 +125,7 @@ const Customizer = () => {
                 key={tab.name}
                 tab={tab}
                 isFilterTab
-                isActiveTab=""
+                isActiveTab={activeFilterTab[tab.name]}
                 handleClick={() => {}}
               />
             ))}
